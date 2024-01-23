@@ -138,7 +138,7 @@ async function startApp(pool) {
     app.use(express.json());
     app.use(
       cors({
-        origin: "*",
+        origin: "https://intelli-lease.onrender.com",
         credentials: true,
         optionSuccessStatus: 200,
       })
