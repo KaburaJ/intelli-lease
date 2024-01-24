@@ -27,13 +27,7 @@ try {
     const pool = await sql.connect(config)
     console.log("App Connected to database");
 
-    const redisClient =  createClient({
-      password: "FBaUqVovxxTpWnuCPtNkqM01vjCrzkUq",
-      socket: {
-        host: "redis-17901.c251.east-us-mz.azure.cloud.redislabs.com",
-        port: 17901,
-      },
-    });
+    const redisClient =  createClient();
     redisClient.connect()
     console.log("Connected to Redis")
     
