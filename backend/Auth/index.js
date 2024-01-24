@@ -99,8 +99,6 @@ async function startApp(pool) {
 
   const app = express();
  
-  console.log(pool);
-
   try {
     app.set("view engine", "ejs");
     const options = {

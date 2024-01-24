@@ -3,7 +3,7 @@ const session = require('express-session');
 const redis = require('redis');
 const logicRoutes = require('./src/routers/LogicRoutes');
 const sql = require('mssql')
-const config = require('../auth/src/config/userConfig')
+const config = require('../Auth/src/config/userConfig')
 const RedisStore = require('connect-redis').default;
 const { v4 } = require("uuid")
 const {createClient} = require("redis")
@@ -22,9 +22,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-
-
-
 async function startApp(){
 try {
     const pool = await sql.connect(config)
@@ -41,7 +38,6 @@ try {
     const oneDay = 60 * 60 * 1000 * 24;
 app.use((req, res, next)=>{req.pool = pool; next()})
 
-// Add the session middleware
 app.use(session({
   store: redisStore,
   secret: process.env.SECRET,
@@ -54,7 +50,7 @@ app.use(session({
     httpOnly: true,
     maxAge: oneDay,
     secure: false,
-    domain: 'localhost'
+    domain: 'redis-17901.c251.east-us-mz.azure.cloud.redislabs.com:17901'
   }
 }))
 
@@ -87,10 +83,10 @@ app.use('/', async (req, res, next) => {
 app.use('/', logicRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Share Sphere');
+  res.send('IntelliLease');
 });
 
-const port = 5003;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server is listening at port ${port}`);
 });

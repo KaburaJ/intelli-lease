@@ -1,7 +1,7 @@
 const mssql = require('mssql');
 const config = require('../config/userConfig');
 
-async function SavePost(req, res) {
+async function addLandLeasingDetails(req, res) {
   try{
         let sql = await mssql.connect(config);
         let user = req.body;
@@ -9,21 +9,23 @@ async function SavePost(req, res) {
         if (sql.connected) {
           let request = new mssql.Request(sql);
           request.input('UserID', UserID)
-          .input('PostID', user.PostID)
-
-          let results = await request.execute('SavePost')
+          request.input('County', user.County)
+          request.input('SubCounty', user.SubCounty)
+          request.input('Constituency', user.Constituency)
+          request.input('LandSize', user.LandSize)
+          let results = await request.execute('dbo.addLandLeasingDetails')
           res.json({
             success: true,
-            message: "Saved successfully",
+            message: "Added land leasing details successfully",
             results: results.recordset
           }
            );
         }
   }
    catch (error) {
-      console.error('Error saving:', error);
+      console.error('Error adding land leasing details:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-module.exports = SavePost
+module.exports = addLandLeasingDetails
