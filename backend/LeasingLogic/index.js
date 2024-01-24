@@ -14,7 +14,7 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://intelli-lease-land-details.onrender.com',
   credentials: true,
   optionSuccessStatus: 200,
 };
