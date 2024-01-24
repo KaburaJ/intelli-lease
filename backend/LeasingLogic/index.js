@@ -63,7 +63,7 @@ app.use(session({
 
 app.use('/', async (req, res, next) => {
   try {
-    let cookie = req.headers['cookie'];
+    let cookie = req.headers['Cookie'];
     if (!cookie) {
       throw new Error('Cookie header is missing.');
     }
