@@ -66,7 +66,6 @@ app.use('/', async (req, res, next) => {
     let session = await redisClient.get(sessionID);
     if (session) {
       let real_session = JSON.parse(session);
-      // console.log(real_session);
       next();
     } else {
       res.status(403).json({
