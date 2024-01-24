@@ -61,29 +61,29 @@ app.use(session({
 }))
 
 
-app.use('/', async (req, res, next) => {
-  try {
-    let cookie = req.headers['Cookie'];
-    if (!cookie) {
-      throw new Error('Cookie header is missing.');
-    }
+// app.use('/', async (req, res, next) => {
+//   try {
+//     let cookie = req.headers['Cookie'];
+//     if (!cookie) {
+//       throw new Error('Cookie header is missing.');
+//     }
 
-    let sessionID = cookie.substring(16, 52);
-    let session = await redisClient.get(sessionID);
-    if (session) {
-      let real_session = JSON.parse(session);
-      next();
-    } else {
-      res.status(403).json({
-        success: false,
-        message: "login to proceed",
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+//     let sessionID = cookie.substring(16, 52);
+//     let session = await redisClient.get(sessionID);
+//     if (session) {
+//       let real_session = JSON.parse(session);
+//       next();
+//     } else {
+//       res.status(403).json({
+//         success: false,
+//         message: "login to proceed",
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
 app.use('/', logicRoutes);
 
