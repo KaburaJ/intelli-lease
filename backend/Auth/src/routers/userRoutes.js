@@ -123,7 +123,6 @@
 
 const express = require('express');
 const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
-const isAuthorized = require('../middlewares/roleAuthMiddleware')
 const userRoutes = express.Router();
 
 userRoutes.post('/user/signup', registerUser);
