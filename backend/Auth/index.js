@@ -69,11 +69,8 @@
 require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
-const session = require("express-session");
-const { v4 } = require("uuid");
 const sql = require("mssql");
 const config = require("./src/config/userConfig");
-const { createClient } = require("redis");
 const userRoutes = require("./src/routers/userRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
