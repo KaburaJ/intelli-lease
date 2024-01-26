@@ -123,13 +123,15 @@
 
 const express = require('express');
 const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
+const verifyToken = require('../middlewares/authMiddleware');
 const userRoutes = express.Router();
 
-userRoutes.post('/user/signup', registerUser); // Remove the middleware from this route
+userRoutes.post('/user/signup', registerUser); 
 userRoutes.post('/user/login', loginUser);
 userRoutes.get('/user/logout', logoutUser);
 
-// Define isAuthorized middleware separately
+userRoutes.use(verifyToken); 
+
 const isAuthorized = (allowedRoles) => {
     return (req, res, next) => {
       if (allowedRoles.includes(req.userRole)) {

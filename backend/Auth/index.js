@@ -75,7 +75,6 @@ const userRoutes = require("./src/routers/userRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const ejs = require("ejs");
-const verifyToken = require("./src/middlewares/authMiddleware");
 
 async function start(){
   try {
@@ -110,7 +109,6 @@ async function startApp(pool) {
       apis: ["./src/routers/*.js"],
     };
     const specs = swaggerJsdoc(options);
-    app.use(verifyToken); 
 
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
     app.use(express.json());
