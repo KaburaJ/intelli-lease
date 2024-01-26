@@ -130,6 +130,15 @@ userRoutes.post('/user/signup', registerUser);
 userRoutes.post('/user/login', loginUser);
 userRoutes.get('/user/logout', logoutUser);
 
+function isAuthorized(allowedRoles) {
+    return (req, res, next) => {
+      if (allowedRoles.includes(req.userRole)) {
+        next();
+      } else {
+        res.status(403).json({ message: 'Unauthorized' });
+      }
+    };
+  }
 
 userRoutes.get('/protected', isAuthorized([1, 'user']), (req, res) => {
   res.send('Hello!');
