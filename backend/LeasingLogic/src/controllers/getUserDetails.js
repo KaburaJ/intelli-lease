@@ -8,7 +8,7 @@ async function getUserDetails(req, res) {
         let UserID = req.session.user.UserID;
         if (sql.connected) {
           let request = new mssql.Request(sql);
-          request.input('UserEmail', UserEmail)
+          request.input('UserID', UserID)
           let results = await request.execute('dbo.getUserDetails')
           res.json({
             success: true,

@@ -5,7 +5,7 @@ const getUserDetails = require('../controllers/getUserDetails');
 
 
 logicRoutes.post('/lease-out', addLandLeasingDetails)
-logicRoutes.post('/userdetails', getUserDetails)
+logicRoutes.get('/userdetails', getUserDetails)
 
 
 module.exports = logicRoutes;
