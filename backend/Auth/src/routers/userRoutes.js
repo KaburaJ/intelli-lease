@@ -125,11 +125,12 @@ const express = require('express');
 const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
 const userRoutes = express.Router();
 
-userRoutes.post('/user/signup', registerUser);
+userRoutes.post('/user/signup', registerUser); // Remove the middleware from this route
 userRoutes.post('/user/login', loginUser);
 userRoutes.get('/user/logout', logoutUser);
 
-function isAuthorized(allowedRoles) {
+// Define isAuthorized middleware separately
+const isAuthorized = (allowedRoles) => {
     return (req, res, next) => {
       if (allowedRoles.includes(req.userRole)) {
         next();
@@ -137,8 +138,9 @@ function isAuthorized(allowedRoles) {
         res.status(403).json({ message: 'Unauthorized' });
       }
     };
-  }
+};
 
+// Apply isAuthorized middleware only to the protected route
 userRoutes.get('/protected', isAuthorized([1, 'user']), (req, res) => {
   res.send('Hello!');
 });
