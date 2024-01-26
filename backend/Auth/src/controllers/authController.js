@@ -96,25 +96,25 @@
  *         description: Authentication failed
  */
 
-
-const Joi = require('joi');
-const bcrypt = require('bcrypt');
-const mssql = require('mssql');
-const { Connection } = require('tedious');
-const userSchema = require('../validators/userRegistrationValidator');
-const loginSchema = require('../validators/userLoginValidator');
-const config = require('../config/userConfig');
-const ejs = require('ejs');
-const path = require('path');
-const sendMail = require('../utils/authMail')
+const jwt = require("jsonwebtoken");
+const Joi = require("joi");
+const bcrypt = require("bcrypt");
+const mssql = require("mssql");
+const { Connection } = require("tedious");
+const userSchema = require("../validators/userRegistrationValidator");
+const loginSchema = require("../validators/userLoginValidator");
+const config = require("../config/userConfig");
+const ejs = require("ejs");
+const path = require("path");
+const sendMail = require("../utils/authMail");
 
 const connection = new Connection(config);
 
-connection.on('connect', function (err) {
+connection.on("connect", function (err) {
   if (err) {
-    console.error('Error connecting to the database:', err);
+    console.error("Error connecting to the database:", err);
   } else {
-    console.log('Connected to the database');
+    console.log("Connected to the database");
   }
 });
 
@@ -135,30 +135,33 @@ module.exports = {
       if (sql.connected) {
         const request = new mssql.Request(sql);
         request
-          .input('FirstName', user.FirstName)
-          .input('LastName', user.LastName)
-          .input('UserEmail', user.UserEmail)
-          .input('UserPasswordHash', hashedPassword);
+          .input("FirstName", user.FirstName)
+          .input("LastName", user.LastName)
+          .input("UserEmail", user.UserEmail)
+          .input("UserPasswordHash", hashedPassword);
 
-        const results = await request.execute('[dbo].[AddUsers]');
+        const results = await request.execute("[dbo].[AddUsers]");
         res.json(results.recordset);
 
-        console.log('CONNECTED AT SIGN UP');
-        console.log('Received request body:', req.body);
-        console.log('Hashed Password:', hashedPassword);
-        console.log('Parameters sent to stored procedure:', {
+        console.log("CONNECTED AT SIGN UP");
+        console.log("Received request body:", req.body);
+        console.log("Hashed Password:", hashedPassword);
+        console.log("Parameters sent to stored procedure:", {
           FirstName: user.FirstName,
           LastName: user.LastName,
           UserEmail: user.UserEmail,
           UserPasswordHash: hashedPassword,
         });
 
-        const emailBody = await ejs.renderFile(path.join(__dirname, '../views/email.ejs'), { userName: user.FirstName });
-        sendMail(user.UserEmail, 'Verification Email', emailBody);
+        const emailBody = await ejs.renderFile(
+          path.join(__dirname, "../views/email.ejs"),
+          { userName: user.FirstName }
+        );
+        sendMail(user.UserEmail, "Verification Email", emailBody);
       }
     } catch (e) {
       console.error(e);
-      res.status(500).send('An error occurred when registering a user');
+      res.status(500).send("An error occurred when registering a user");
     }
   },
 
@@ -174,10 +177,10 @@ module.exports = {
 
       if (sql.connected) {
         const request = new mssql.Request(sql);
-        request.input('UserEmail', user.UserEmail);
+        request.input("UserEmail", user.UserEmail);
 
         const result = await request.query(
-          'SELECT * FROM dbo.Users WHERE UserEmail = @UserEmail'
+          "SELECT * FROM dbo.Users WHERE UserEmail = @UserEmail"
         );
 
         if (result.recordset.length) {
@@ -188,37 +191,38 @@ module.exports = {
           );
 
           if (passwordsMatch) {
-            req.session.user = result.recordset[0];
+            const user = result.recordset[0];
 
             req.session.save((error) => {
               if (error) {
-                console.error('Session save error:', error);
+                console.error("Session save error:", error);
               } else {
                 res.status(200).json({
                   success: true,
-                  message: 'Logged in successfully',
-                  result: req.session.user,
+                  message: "Logged in successfully",
+                  token: token,
+                  user: user,
                 });
               }
             });
           } else {
             res.status(401).json({
               success: false,
-              message: 'Incorrect password',
+              message: "Incorrect password",
             });
           }
         } else {
-          res.status(404).json({ success: false, message: 'No user found' });
+          res.status(404).json({ success: false, message: "No user found" });
         }
       } else {
         res
           .status(500)
-          .json({ success: false, message: 'Database connection error' });
+          .json({ success: false, message: "Database connection error" });
       }
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: 'Login error',
+        message: "Login error",
       });
     }
   },
@@ -228,15 +232,15 @@ module.exports = {
       if (err) {
         res.status(200).json({
           success: true,
-          message: 'You have been logged out',
+          message: "You have been logged out",
         });
       } else {
         req.logout(() => {
           res.status(200).json({
             success: true,
-            message: 'You have been logged out',
+            message: "You have been logged out",
           });
-          res.redirect('/auth/google');
+          res.redirect("/auth/google");
         });
       }
     });

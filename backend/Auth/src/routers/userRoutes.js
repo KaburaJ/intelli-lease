@@ -22,6 +22,11 @@
  *           type: string
  *         UserCPassword:
  *           type: string
+ *
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
  */
 
 /**
@@ -81,6 +86,8 @@
  *         description: Incorrect password or user not found
  *       500:
  *         description: Internal server error
+ *   security:
+ *     - BearerAuth: []
  */
 
 /**
@@ -94,14 +101,38 @@
  *         description: User logout successful
  *       500:
  *         description: Internal server error
+ *   security:
+ *     - BearerAuth: []
+ */
+
+/**
+ * @swagger
+ * /protected:
+ *   get:
+ *     summary: Protected route
+ *     description: Displays a message for authenticated users
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated
+ *       401:
+ *         description: Authentication failed
+ *   security:
+ *     - BearerAuth: []
  */
 
 const express = require('express');
 const { registerUser, loginUser, logoutUser } = require('../controllers/authController');
+const isAuthorized = require('../middlewares/roleAuthMiddleware')
 const userRoutes = express.Router();
 
 userRoutes.post('/user/signup', registerUser);
 userRoutes.post('/user/login', loginUser);
 userRoutes.get('/user/logout', logoutUser);
+
+
+userRoutes.get('/protected', isAuthorized([1, 'user']), (req, res) => {
+  res.send('Hello!');
+});
 
 module.exports = userRoutes;
