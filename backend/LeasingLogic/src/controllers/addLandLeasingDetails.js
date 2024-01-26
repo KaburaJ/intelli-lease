@@ -5,7 +5,7 @@ async function addLandLeasingDetails(req, res) {
   try{
         let sql = await mssql.connect(config);
         let user = req.body;
-        let UserID = req.session.user.UserID;
+        const userID = req.decodedToken.userID;
         if (sql.connected) {
           let request = new mssql.Request(sql);
           request.input('UserID', UserID)
