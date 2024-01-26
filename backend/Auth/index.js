@@ -116,14 +116,6 @@ async function startApp(pool) {
     app.use(verifyToken); 
 
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-
-    const redisStore = new RedisStore({
-      client: client,
-      prefix: "",
-    });
-
-    const oneDay = 60 * 60 * 1000 * 24;
-
     app.use(express.json());
     app.use(
       cors({
