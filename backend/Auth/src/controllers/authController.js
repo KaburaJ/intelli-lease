@@ -180,9 +180,7 @@ module.exports = {
         const request = new mssql.Request(sql);
         request.input("UserEmail", user.UserEmail);
 
-        const result = await request.query(
-          "SELECT * FROM dbo.Users WHERE UserEmail = @UserEmail"
-        );
+        const result = await request.execute('dbo.loginProcedure');
 
         if (result.recordset.length) {
           const dbPassword = result.recordset[0].UserPasswordHash;
@@ -197,7 +195,7 @@ module.exports = {
             const token = jwt.sign({ UserID: user.UserID }, process.env.JWT_SECRET, {
               expiresIn: '1h', 
             });
-            req.session.save((error) => {
+
               if (error) {
                 console.error("Session save error:", error);
               } else {
@@ -208,7 +206,6 @@ module.exports = {
                   user: user,
                 });
               }
-            });
           } else {
             res.status(401).json({
               success: false,
