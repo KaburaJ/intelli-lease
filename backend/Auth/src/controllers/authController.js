@@ -192,10 +192,12 @@ module.exports = {
 
           if (passwordsMatch) {
             const user = result.recordset[0];
+            
             const token = jwt.sign({ UserID: user.UserID }, process.env.JWT_SECRET, {
               expiresIn: '1h', 
             });
 
+            console.log(token);
             req.session.save((error) => {
               if (error) {
                 console.error("Session save error:", error);
