@@ -195,6 +195,7 @@ module.exports = {
             const token = jwt.sign({ UserID: user.UserID }, process.env.JWT_SECRET, {
               expiresIn: '1h', 
             });
+            console.log(token);
 
               if (error) {
                 console.error("Session save error:", error);
