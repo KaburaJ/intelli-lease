@@ -173,6 +173,7 @@ module.exports = {
       }
 
       const user = value;
+      console.log(user);
       const sql = await mssql.connect(config);
 
       if (sql.connected) {
@@ -196,8 +197,6 @@ module.exports = {
             const token = jwt.sign({ UserID: user.UserID }, process.env.JWT_SECRET, {
               expiresIn: '1h', 
             });
-
-            console.log(token);
             req.session.save((error) => {
               if (error) {
                 console.error("Session save error:", error);
