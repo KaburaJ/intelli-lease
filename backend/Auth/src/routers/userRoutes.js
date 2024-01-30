@@ -142,7 +142,6 @@ const isAuthorized = (allowedRoles) => {
     };
 };
 
-// Apply isAuthorized middleware only to the protected route
 userRoutes.get('/protected', isAuthorized([1, 'user']), (req, res) => {
   res.send('Hello!');
 });
